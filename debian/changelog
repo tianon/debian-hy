@@ -1,0 +1,5 @@
+hy (0.9.11-1) experimental; urgency=low
+
+  * Initial release (Closes: #731059).
+
+ -- Paul Tagliamonte <paultag@debian.org>  Sun, 01 Dec 2013 09:50:26 -0500
