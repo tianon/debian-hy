@@ -1,2 +1,2 @@
 version=3
-    https://github.com/hylang/hy/tags .*/v(\d\S*)\.tar\.gz
+    https://github.com/hylang/hy/tags .*/(\d\S*)\.tar\.gz
