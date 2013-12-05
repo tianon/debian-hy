@@ -11,7 +11,8 @@ Vcs-Browser: http://anonscm.debian.org/gitweb/?p=collab-maint/hy.git;a=summary
 
 Package: hy
 Architecture: all
-Depends: ${misc:Depends}, ${python:Depends}
+Section: devel
+Depends: ${misc:Depends}, ${python:Depends}, python-rply
 Description: Lisp (s-expression) based frontend to Python
  .
  .
