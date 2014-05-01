@@ -21,6 +21,9 @@ override_dh_auto_test:
 		$$py /usr/bin/nosetests; \
 	done
 
+override_dh_installchangelogs:
+	dh_installchangelogs NEWS
+
 override_dh_auto_install:
 	set -xe; \
 	for py in $(PYVERS); do \
