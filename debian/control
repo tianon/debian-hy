@@ -23,7 +23,7 @@ X-Python3-Version: >= 3.2
 
 Package: python-hy
 Architecture: all
-Section: devel
+Section: python
 Depends: python-rply, ${misc:Depends}, ${python:Depends}
 Description: Lisp (s-expression) based frontend to Python
  Hy is a wonderful dialect of Lisp that's embedded in Python.
@@ -33,10 +33,10 @@ Description: Lisp (s-expression) based frontend to Python
 
 Package: python3-hy
 Architecture: all
-Section: devel
+Section: python
 Depends: python3-rply, ${misc:Depends}, ${python3:Depends}
 Description: Lisp (s-expression) based frontend to Python 3
- Hy is a wonderful dialect of Lisp that's embedded in Python.
+ Hy is a wonderful dialect of Lisp that's embedded in Python 3.
  .
  Since Hy transforms its Lisp code into the Python Abstract Syntax Tree, you
  have the whole beautiful world of Python at your fingertips, in Lisp form!
