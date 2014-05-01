@@ -53,6 +53,14 @@ Copyright:
  Ivan Kozik <ivan@ludios.org>
  Allison Kaptur <allison.kaptur@gmail.com>
 License: Expat
+
+Files: debian/*
+Copyright: 2013-2014 Paul Tagliamonte <tag@pault.ag>,
+           2013-2014 Vasudev Kamath <kamathvasudev@gmail.com>,
+           2013-2014 Tianon Gravi <admwiggin@gmail.com>
+License: Expat
+
+License: Expat
  Permission is hereby granted, free of charge, to any person obtaining a
  copy of this software and associated documentation files (the "Software"),
  to deal in the Software without restriction, including without limitation
