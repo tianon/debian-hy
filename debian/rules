@@ -33,10 +33,16 @@ override_dh_auto_install:
 		$$py setup.py install --skip-build --root debian/$(PY2_PACKAGE_NAME) \
 		--install-layout deb; \
 	done
+	for bin in debian/$(PY2_PACKAGE_NAME)/usr/bin/*; do \
+		mv $$bin $${bin}2; \
+	done
 	set -xe; \
 		for py in $(PY3VERS); do \
 		$$py setup.py install --skip-build --root debian/$(PY3_PACKAGE_NAME) \
 		--install-layout deb; \
+	done
+	for bin in debian/$(PY3_PACKAGE_NAME)/usr/bin/*; do \
+		mv $$bin $${bin}3; \
 	done
 	# Remove me when dh_python2 can handle this file
 	rm -vf debian/*/usr/lib/python*/*-packages/*.egg-info/SOURCES.txt
