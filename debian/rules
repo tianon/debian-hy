@@ -17,10 +17,11 @@ override_dh_auto_build:
 	done
 
 override_dh_auto_test:
-#	for py in $(PYVERS); do \
+	rm tests/test_bin.py # there aren't any binaries to test at this point
+	for py in $(PYVERS); do \
 		$$py /usr/bin/nosetests; \
 	done
-#	for py in $(PY3VERS); do \
+	for py in $(PY3VERS); do \
 		$$py /usr/bin/nosetests3; \
 	done
 
