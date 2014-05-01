@@ -1,4 +1,4 @@
-hy (0.9.11-1) experimental; urgency=low
+hy (0.10.0-1) UNRELEASED; urgency=medium
 
   * Initial release (Closes: #731059).
 
