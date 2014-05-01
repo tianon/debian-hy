@@ -8,7 +8,7 @@ PY3VERS = $(shell py3versions -r)
 
 
 %:
-	dh $@ --with=python2
+	dh $@ --with=python2,python3
 
 override_dh_auto_build:
 	set -xe; \
@@ -17,8 +17,11 @@ override_dh_auto_build:
 	done
 
 override_dh_auto_test:
-	for py in $(PYVERS); do \
+#	for py in $(PYVERS); do \
 		$$py /usr/bin/nosetests; \
+	done
+#	for py in $(PY3VERS); do \
+		$$py /usr/bin/nosetests3; \
 	done
 
 override_dh_installchangelogs:
