@@ -1,0 +1,234 @@
+diff --git a/bin/hy2py b/bin/hy2py
+deleted file mode 100755
+index 69b151b..0000000
+--- a/bin/hy2py
++++ /dev/null
+@@ -1,40 +0,0 @@
+-#!/usr/bin/env python
+-from __future__ import print_function
+-
+-from hy.importer import import_file_to_ast, import_file_to_hst
+-
+-import argparse
+-import sys
+-
+-import astor.codegen
+-
+-module_name = "<STDIN>"
+-
+-parser = argparse.ArgumentParser(
+-    prog="hy2py",
+-    usage="%(prog)s [options] FILE",
+-    formatter_class=argparse.RawDescriptionHelpFormatter)
+-parser.add_argument("--with-source", "-s", action="store_true",
+-                    help="Show the parsed source structure")
+-parser.add_argument("--with-ast", "-a", action="store_true",
+-                    help="Show the generated AST")
+-parser.add_argument("--without-python", "-np", action="store_true",
+-                    help="Do not show the python code generated from the AST")
+-parser.add_argument('args', nargs=argparse.REMAINDER, help=argparse.SUPPRESS)
+-
+-options = parser.parse_args(sys.argv[1:])
+-
+-if options.with_source:
+-    hst = import_file_to_hst(options.args[0])
+-    print(hst)
+-    print()
+-    print()
+-
+-_ast = import_file_to_ast(options.args[0], module_name)
+-if options.with_ast:
+-    print(astor.dump(_ast))
+-    print()
+-    print()
+-
+-if not options.without_python:
+-    print(astor.codegen.to_source(_ast))
+diff --git a/hy/cmdline.py b/hy/cmdline.py
+index 98f10cd..0c738f2 100644
+--- a/hy/cmdline.py
++++ b/hy/cmdline.py
+@@ -66,11 +66,7 @@ builtins.exit = HyQuitter('exit')
+ 
+ 
+ def print_python_code(_ast):
+-    import astor.codegen
+-    # astor cannot handle ast.Interactive, so disguise it as a module
+-    _ast_for_print = ast.Module()
+-    _ast_for_print.body = _ast.body
+-    print(astor.codegen.to_source(_ast_for_print))
++    print('Unimplemented!  Gogo package astor for Debian for us!')
+ 
+ 
+ class HyREPL(code.InteractiveConsole):
+diff --git a/hy/core/language.hy b/hy/core/language.hy
+index cdef29e..d6e85db 100644
+--- a/hy/core/language.hy
++++ b/hy/core/language.hy
+@@ -62,15 +62,7 @@
+ (defn disassemble [tree &optional [codegen false]]
+   "Dump the python AST for a given Hy tree to standard output
+    If the second argument is true, generate python code instead."
+-  (import astor)
+-  (import hy.compiler)
+-
+-  (fake-source-positions tree)
+-  (setv compiled (hy.compiler.hy_compile tree (calling-module-name)))
+-  (print ((if codegen
+-            astor.codegen.to_source
+-            astor.dump)
+-          compiled)))
++  "Unimplemented! Gogo package astor for Debian for us!")
+ 
+ (defn distinct [coll]
+   "Return a generator from the original collection with duplicates
+diff --git a/setup.py b/setup.py
+index 40bb4e0..e6ac750 100755
+--- a/setup.py
++++ b/setup.py
+@@ -45,7 +45,7 @@ long_description = """Hy is a Python <--> Lisp layer. It helps
+ make things work nicer, and lets Python and the Hy lisp variant play
+ nice together. """
+ 
+-install_requires = ['rply>=0.7.0', 'astor>=0.3']
++install_requires = ['rply>=0.7.0']
+ if sys.version_info[:2] < (2, 7):
+     install_requires.append('argparse>=1.2.1')
+     install_requires.append('importlib>=1.0.2')
+diff --git a/tests/native_tests/language.hy b/tests/native_tests/language.hy
+index ccf81c5..0dfad02 100644
+--- a/tests/native_tests/language.hy
++++ b/tests/native_tests/language.hy
+@@ -935,26 +935,6 @@
+   (assert (= (calling-module-name 0) "tests.native_tests.language")))
+ 
+ 
+-(defn test-disassemble []
+-  "NATIVE: Test the disassemble function"
+-  (import sys)
+-  (if-python2
+-   (import [io [BytesIO :as StringIO]])
+-   (import [io [StringIO]]))
+-  (setv prev-stdout sys.stdout)
+-  (setv sys.stdout (StringIO))
+-  (disassemble '(do (leaky) (leaky) (macros)))
+-  (setv stdout (.getvalue sys.stdout))
+-  (setv sys.stdout prev-stdout)
+-  (assert (in "leaky" stdout))
+-  (assert (in "macros" stdout))
+-  (setv sys.stdout (StringIO))
+-  (disassemble '(do (leaky) (leaky) (macros)) true)
+-  (setv stdout (.getvalue sys.stdout))
+-  (setv sys.stdout prev-stdout)
+-  (assert (= stdout "leaky()\nleaky()\nmacros()\n")))
+-
+-
+ (defn test-attribute-access []
+   "NATIVE: Test the attribute access DSL"
+   (defclass mycls [object])
+diff --git a/tests/native_tests/native_macros.hy b/tests/native_tests/native_macros.hy
+index 571e824..c13d70e 100644
+--- a/tests/native_tests/native_macros.hy
++++ b/tests/native_tests/native_macros.hy
+@@ -120,76 +120,6 @@
+   (assert (= (get sys.version_info 0)
+              (if-python2 2 3))))
+ 
+-(defn test-gensym-in-macros []
+-  (import ast)
+-  (import [astor.codegen [to_source]])
+-  (import [hy.importer [import_buffer_to_ast]])
+-  (setv macro1 "(defmacro nif [expr pos zero neg]
+-      (let [[g (gensym)]]
+-        `(let [[~g ~expr]]
+-           (cond [(pos? ~g) ~pos]
+-                 [(zero? ~g) ~zero]
+-                 [(neg? ~g) ~neg]))))
+-
+-    (print (nif (inc -1) 1 0 -1))
+-    ")
+-  ;; expand the macro twice, should use a different
+-  ;; gensym each time
+-  (setv _ast1 (import_buffer_to_ast macro1 "foo"))
+-  (setv _ast2 (import_buffer_to_ast macro1 "foo"))
+-  (setv s1 (to_source _ast1))
+-  (setv s2 (to_source _ast2))
+-  ;; and make sure there is something new that starts with :G_
+-  (assert (in ":G_" s1))
+-  (assert (in ":G_" s2))
+-  ;; but make sure the two don't match each other
+-  (assert (not (= s1 s2))))
+-
+-(defn test-with-gensym []
+-  (import ast)
+-  (import [astor.codegen [to_source]])
+-  (import [hy.importer [import_buffer_to_ast]])
+-  (setv macro1 "(defmacro nif [expr pos zero neg]
+-      (with-gensyms [a]
+-        `(let [[~a ~expr]]
+-           (cond [(pos? ~a) ~pos]
+-                 [(zero? ~a) ~zero]
+-                 [(neg? ~a) ~neg]))))
+-
+-    (print (nif (inc -1) 1 0 -1))
+-    ")
+-  ;; expand the macro twice, should use a different
+-  ;; gensym each time
+-  (setv _ast1 (import_buffer_to_ast macro1 "foo"))
+-  (setv _ast2 (import_buffer_to_ast macro1 "foo"))
+-  (setv s1 (to_source _ast1))
+-  (setv s2 (to_source _ast2))
+-  (assert (in ":a_" s1))
+-  (assert (in ":a_" s2))
+-  (assert (not (= s1 s2))))
+-
+-(defn test-defmacro-g! []
+-  (import ast)
+-  (import [astor.codegen [to_source]])
+-  (import [hy.importer [import_buffer_to_ast]])
+-  (setv macro1 "(defmacro/g! nif [expr pos zero neg]
+-        `(let [[~g!res ~expr]]
+-           (cond [(pos? ~g!res) ~pos]
+-                 [(zero? ~g!res) ~zero]
+-                 [(neg? ~g!res) ~neg])))
+-
+-    (print (nif (inc -1) 1 0 -1))
+-    ")
+-  ;; expand the macro twice, should use a different
+-  ;; gensym each time
+-  (setv _ast1 (import_buffer_to_ast macro1 "foo"))
+-  (setv _ast2 (import_buffer_to_ast macro1 "foo"))
+-  (setv s1 (to_source _ast1))
+-  (setv s2 (to_source _ast2))
+-  (assert (in ":res_" s1))
+-  (assert (in ":res_" s2))
+-  (assert (not (= s1 s2))))
+-
+ 
+ (defn test-if-not []
+   (assert (= (if-not True :yes :no)
+diff --git a/tests/test_bin.py b/tests/test_bin.py
+index eb0d595..cb4b5c5 100644
+--- a/tests/test_bin.py
++++ b/tests/test_bin.py
+@@ -123,20 +123,6 @@ def test_bin_hyc_missing_file():
+     assert "[Errno 2]" in ret[2]
+ 
+ 
+-def test_hy2py():
+-    i = 0
+-    for dirpath, dirnames, filenames in os.walk("tests/native_tests"):
+-        for f in filenames:
+-            if f.endswith(".hy"):
+-                i += 1
+-                ret = run_cmd("python bin/hy2py -s -a "
+-                              + os.path.join(dirpath, f))
+-                assert ret[0] == 0, f
+-                assert len(ret[1]) > 1, f
+-                assert len(ret[2]) == 0, f
+-    assert i
+-
+-
+ def test_bin_hy_builtins():
+     import hy.cmdline  # NOQA
+ 
