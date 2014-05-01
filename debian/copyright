@@ -1,0 +1,72 @@
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: Hy
+Source: https://github.com/hylang/hy
+
+Files: *
+Copyright:
+ Paul Tagliamonte <paultag@debian.org>
+ Thomas Mashek <thomas@thescoundrels.net>
+ Amrut Joshi <amrut.joshi@gmail.com>
+ Christopher Allan Webber <cwebber@dustycloud.org>
+ Will Kahn-Greene <willg@bluesock.org>
+ James King <james@agentultra.com>
+ Julien Danjou <julien@danjou.info>
+ Nicolas Dandrimont <nicolas.dandrimont@crans.org>
+ Gergely Nagy <algernon@madhouse-project.org>
+ Konrad Hinsen <konrad.hinsen@fastmail.net>
+ Vladimir Gorbunov <vsg@suburban.me>
+ John Jacobsen <john@mail.npxdesigns.com>
+ rogererens <roger.erens@e-s-c.biz>
+ Thomas Ballinger <thomasballinger@gmail.com>
+ Morten Linderud <mcfoxax@gmail.com>
+ Guillermo Vayá <guivaya@gmail.com>
+ Bob Tolbert <bob@tolbert.org>
+ Ralph Möritz <ralph.moeritz@outlook.com>
+ Josh McLaughlin <josh@phear.cc>
+ Berker Peksag <berker.peksag@gmail.com>
+ Henrique Carvalho Alves <hcarvalhoalves@gmail.com>
+ Joe Hakim Rahme <joehakimrahme@gmail.com>
+ Kenan Bölükbaşı <kenanbolukbasi@gmail.com>
+ Abhishek L <abhishek.lekshmanan@gmail.com>
+ Christopher Browne <cbbrowne@ca.afilias.info>
+ Clinton N. Dreisbach <crnixon@gmail.com>
+ D. Joe <deejoe+castanea@etrumeus.com>
+ Duncan McGreggor <duncan.mcgreggor@rackspace.com>
+ E. Anders Lannerback <anders@lannerback.net>
+ Jack <jackjrabbit+github@gmail.com>
+ Johan Euphrosine <proppy@google.com>
+ Kevin Zita <kzita@kent.edu>
+ Matt Fenwick <mfenwick100@gmail.com>
+ Sean B. Palmer <sean@miscoranda.com>
+ Thom Neale <twneale@gmail.com>
+ Tuukka Turto <tuukka.turto@oktaeder.net>
+ Vasudev Kamath <kamathvasudev@gmail.com>
+ Yuval Langer <yuval.langer@gmail.com>
+ Fatih Kadir Akın <fka@fatihak.in>
+ Jack Hooper <contact.jhooper@gmail.com>
+ Brian McKenna <brian@brianmckenna.org>
+ Halit Alptekin <info@halitalptekin.com>
+ Richard Parsons <richard.lee.parsons@gmail.com>
+ han semaj <sangho.nah@gmail.com>
+ kirbyfan64 <kirbyfan64@users.noreply.github.com>
+ Brendan Curran-Johnson <brendan@bcjbcj.ca>
+ Ivan Kozik <ivan@ludios.org>
+ Allison Kaptur <allison.kaptur@gmail.com>
+License: Expat
+ Permission is hereby granted, free of charge, to any person obtaining a
+ copy of this software and associated documentation files (the "Software"),
+ to deal in the Software without restriction, including without limitation
+ the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ and/or sell copies of the Software, and to permit persons to whom the
+ Software is furnished to do so, subject to the following conditions:
+ .
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+ .
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+ THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ DEALINGS IN THE SOFTWARE.
