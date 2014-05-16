@@ -5,11 +5,13 @@ Maintainer: Paul Tagliamonte <paultag@debian.org>
 Uploaders: Vasudev Kamath <kamathvasudev@gmail.com>
 Build-Depends: debhelper (>= 9),
                python-all (>= 2.6~),
+               python-astor,
                python-coverage,
                python-nose,
                python-rply,
                python-setuptools,
                python3-all (>= 3.2~),
+               python3-astor,
                python3-coverage,
                python3-nose,
                python3-rply,
@@ -24,7 +26,7 @@ X-Python3-Version: >= 3.2
 Package: python-hy
 Architecture: all
 Section: python
-Depends: python-rply, ${misc:Depends}, ${python:Depends}
+Depends: python-astor, python-rply, ${misc:Depends}, ${python:Depends}
 Description: Lisp (s-expression) based frontend to Python
  Hy is a wonderful dialect of Lisp that's embedded in Python.
  .
@@ -34,7 +36,7 @@ Description: Lisp (s-expression) based frontend to Python
 Package: python3-hy
 Architecture: all
 Section: python
-Depends: python3-rply, ${misc:Depends}, ${python3:Depends}
+Depends: python3-astor, python3-rply, ${misc:Depends}, ${python3:Depends}
 Description: Lisp (s-expression) based frontend to Python 3
  Hy is a wonderful dialect of Lisp that's embedded in Python 3.
  .

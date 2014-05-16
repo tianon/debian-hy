@@ -1,5 +1,10 @@
 FROM tianon/debian-devel
 
+RUN /tianon-prep-source-package.sh python-astor https://github.com/tianon/debian-python-astor.git \
+	&& cd /usr/src/python-astor \
+	&& dpkg-buildpackage -uc -us \
+	&& { dpkg -i ../python*-astor*.deb || apt-get install -f; }
+
 # start by adding just "debian/control" so we can get mk-build-deps with maximum caching
 ADD control /usr/src/hy/debian/
 WORKDIR /usr/src/hy
