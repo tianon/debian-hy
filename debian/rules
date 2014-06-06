@@ -8,10 +8,10 @@ export PYBUILD_NAME=hy
 override_dh_auto_install:
 	dh_auto_install
 	for bin in debian/python-hy/usr/bin/*; do \
-		mv $$bin $${bin}2; \
+		mv -v $$bin $${bin}2; \
 	done
 	for bin in debian/python3-hy/usr/bin/*; do \
-		mv $$bin $${bin}3; \
+		mv -v $$bin $${bin}3; \
 	done
 
 override_dh_installchangelogs:
