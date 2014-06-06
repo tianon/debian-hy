@@ -1,6 +1,6 @@
 FROM tianon/debian-devel
 
-RUN /tianon-prep-source-package.sh python-astor https://github.com/tianon/debian-python-astor.git \
+RUN /tianon/prep-source-package.sh python-astor svn://svn.debian.org/svn/python-modules/packages/python-astor/trunk \
 	&& cd /usr/src/python-astor \
 	&& dpkg-buildpackage -uc -us \
 	&& { dpkg -i ../python*-astor*.deb || apt-get install -f; }
