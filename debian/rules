@@ -1,49 +1,18 @@
 #!/usr/bin/make -f
 
-PY2_PACKAGE_NAME = python-hy
-PY3_PACKAGE_NAME = python3-hy
-
-PYVERS  = $(shell pyversions -r)
-PY3VERS = $(shell py3versions -r)
-
+export PYBUILD_NAME=hy
 
 %:
-	dh $@ --with=python2,python3
+	dh $@ --with python2,python3 --buildsystem pybuild
 
-override_dh_auto_build:
-	set -xe; \
-	for py in $(PYVERS) $(PY3VERS); do \
-		$$py setup.py build; \
+override_dh_auto_install:
+	dh_auto_install
+	for bin in debian/python-hy/usr/bin/*; do \
+		mv $$bin $${bin}2; \
 	done
-
-override_dh_auto_test:
-	rm tests/test_bin.py # there aren't any binaries to test at this point
-	for py in $(PYVERS); do \
-		$$py /usr/bin/nosetests; \
-	done
-	for py in $(PY3VERS); do \
-		$$py /usr/bin/nosetests3; \
+	for bin in debian/python3-hy/usr/bin/*; do \
+		mv $$bin $${bin}3; \
 	done
 
 override_dh_installchangelogs:
 	dh_installchangelogs NEWS
-
-override_dh_auto_install:
-	set -xe; \
-	for py in $(PYVERS); do \
-		$$py setup.py install --skip-build --root debian/$(PY2_PACKAGE_NAME) \
-		--install-layout deb; \
-	done
-	for bin in debian/$(PY2_PACKAGE_NAME)/usr/bin/*; do \
-		mv $$bin $${bin}2; \
-	done
-	set -xe; \
-		for py in $(PY3VERS); do \
-		$$py setup.py install --skip-build --root debian/$(PY3_PACKAGE_NAME) \
-		--install-layout deb; \
-	done
-	for bin in debian/$(PY3_PACKAGE_NAME)/usr/bin/*; do \
-		mv $$bin $${bin}3; \
-	done
-	# Remove me when dh_python2 can handle this file
-	rm -vf debian/*/usr/lib/python*/*-packages/*.egg-info/SOURCES.txt
