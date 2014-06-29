@@ -5,6 +5,10 @@ export PYBUILD_NAME=hy
 %:
 	dh $@ --with python2,python3 --buildsystem pybuild
 
+override_dh_auto_build:
+	dh_auto_build
+	make -C docs man # TODO html (and install it in hy-doc or something)
+
 override_dh_auto_install:
 	dh_auto_install
 	for bin in debian/python-hy/usr/bin/*; do \
