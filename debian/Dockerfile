@@ -1,13 +1,14 @@
 FROM tianon/debian-devel
 
+# start by adding just "debian/control" so we can get mk-build-deps with maximum caching
+ADD control /usr/src/hy/debian/
+WORKDIR /usr/src/hy
+
+# TODO remove this once python-astor is in the archive
 RUN /tianon/prep-source-package.sh python-astor svn://svn.debian.org/svn/python-modules/packages/python-astor/trunk \
 	&& cd /usr/src/python-astor \
 	&& dpkg-buildpackage -uc -us \
 	&& { dpkg -i ../python*-astor*.deb || apt-get install -f; }
-
-# start by adding just "debian/control" so we can get mk-build-deps with maximum caching
-ADD control /usr/src/hy/debian/
-WORKDIR /usr/src/hy
 
 # get all the build deps of _this_ package in a nice repeatable way
 RUN apt-get update && mk-build-deps -irt'apt-get --no-install-recommends -yq' debian/control
