@@ -1,8 +1,0 @@
-#!/bin/sh
-set -e
-
-update-alternatives --install /usr/bin/hy hy /usr/bin/hy2 10
-
-#DEBHELPER#
-
-exit 0
