@@ -1,5 +1,5 @@
-hy (0.10.0-1) unstable; urgency=medium
+hy (0.10.0-1) UNRELEASED; urgency=medium
 
   * Initial release (Closes: #731059).
 
- -- Paul Tagliamonte <paultag@debian.org>  Mon, 14 Jul 2014 23:07:24 -0400
+ -- Paul Tagliamonte <paultag@debian.org>  Sun, 01 Dec 2013 09:50:26 -0500
