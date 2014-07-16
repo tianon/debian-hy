@@ -1,10 +1,10 @@
-hy (0.10.0-2) UNRELEASED; urgency=medium
+hy (0.10.0-2) unstable; urgency=medium
 
   * Add CC0 to debian/copyright, even though they explicitly don't hold
     copyright and is not a license (to make it clear these files aren't covered
     by Expat or any copyright holders).
 
- -- Paul Tagliamonte <paultag@debian.org>  Tue, 15 Jul 2014 00:29:12 -0400
+ -- Paul Tagliamonte <paultag@debian.org>  Tue, 15 Jul 2014 21:57:00 -0400
 
 hy (0.10.0-1) unstable; urgency=medium
 
