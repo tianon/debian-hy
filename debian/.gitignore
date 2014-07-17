@@ -6,5 +6,6 @@
 *.substvars
 files
 
+hy/
 python-hy/
 python3-hy/
