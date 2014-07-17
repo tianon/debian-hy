@@ -27,7 +27,7 @@ X-Python3-Version: >= 3.2
 
 Package: hy
 Architecture: all
-Depends: python3-hy, ${misc:Depends}
+Depends: python3-hy | python-hy, ${misc:Depends}
 Description: Lisp (s-expression) based frontend to Python (metapackage)
  Hy is a wonderful dialect of Lisp that's embedded in Python.
  .
