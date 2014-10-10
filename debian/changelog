@@ -1,3 +1,9 @@
+hy (0.10.1-1) UNRELEASED; urgency=medium
+
+  * Update to 0.10.1 upstream release!
+
+ -- Tianon Gravi <admwiggin@gmail.com>  Tue, 15 Jul 2014 00:29:12 -0400
+
 hy (0.10.0-2) unstable; urgency=medium
 
   * Add CC0 to debian/copyright, even though they explicitly don't hold
