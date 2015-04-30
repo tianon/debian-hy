@@ -2,12 +2,15 @@
 
 export PYBUILD_NAME=hy
 
+BUILD_DATE=$(shell dpkg-parsechangelog -S Date | LC_ALL=C date -u '+%B %d, %Y' -f -)
+
 %:
 	dh $@ --with python2,python3 --buildsystem pybuild
 
 override_dh_auto_build:
 	dh_auto_build
-	make -C docs man # TODO html (and install it in hy-doc or something)
+	make -C docs man SPHINXOPTS='-D today="$(BUILD_DATE)"'
+	# TODO html docs (and install them in hy-doc or something)
 
 override_dh_auto_install:
 	dh_auto_install
