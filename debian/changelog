@@ -1,10 +1,10 @@
-hy (0.10.1-2) UNRELEASED; urgency=medium
+hy (0.10.1-2) unstable; urgency=medium
 
   * Update Vcs-* fields to point to the correct repositoriy.
   * Remove copyninja from Uploaders per request. (Thanks for your help/support!)
   * Use changelog date in man page for reproducible builds (Closes: #782385).
 
- -- Tianon Gravi <admwiggin@gmail.com>  Thu, 30 Apr 2015 00:09:20 +0000
+ -- Tianon Gravi <admwiggin@gmail.com>  Tue, 05 May 2015 00:30:14 -0600
 
 hy (0.10.1-1) unstable; urgency=medium
 
