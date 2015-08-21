@@ -58,9 +58,9 @@ Files: docs/_static/*
 License: CC0-1.0
 
 Files: debian/*
-Copyright: 2013-2014 Paul Tagliamonte <tag@pault.ag>,
-           2013-2014 Vasudev Kamath <kamathvasudev@gmail.com>,
-           2013-2014 Tianon Gravi <admwiggin@gmail.com>
+Copyright: 2013 Paul Tagliamonte <tag@pault.ag>,
+           2013 Vasudev Kamath <kamathvasudev@gmail.com>,
+           2013 Tianon Gravi <tianon@debian.org>
 License: Expat
 
 License: Expat
