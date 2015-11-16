@@ -1,6 +1,9 @@
 #!/usr/bin/make -f
 
-export PYBUILD_NAME=hy
+export PYBUILD_NAME := hy
+
+# have to set HOME because rply wants to write into ~/.cache/rply
+export HOME := $(CURDIR)/fake-home
 
 BUILD_DATE=$(shell dpkg-parsechangelog -S Date | LC_ALL=C date -u '+%B %d, %Y' -f -)
 
@@ -9,10 +12,8 @@ BUILD_DATE=$(shell dpkg-parsechangelog -S Date | LC_ALL=C date -u '+%B %d, %Y' -
 
 override_dh_auto_build:
 	dh_auto_build
-	# have to set HOME because rply wants to write into ~/.cache/rply
 	make -C docs \
 		SPHINXOPTS='-D today="$(BUILD_DATE)"' \
-		HOME='$(CURDIR)/docs/_build/fake-home' \
 		man
 	# TODO html docs (and install them in hy-doc or something)
 
@@ -27,3 +28,12 @@ override_dh_auto_install:
 
 override_dh_installchangelogs:
 	dh_installchangelogs NEWS
+
+override_dh_auto_clean:
+	dh_auto_clean
+	# sphinx
+	rm -rf docs/_build
+	# clean out our HOME-hack leftovers
+	rm -rf fake-home
+	# egg-info! (not shipped at all in upstream tarballs)
+	rm -rf hy.egg-info
