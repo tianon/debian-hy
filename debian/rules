@@ -12,7 +12,7 @@ override_dh_auto_build:
 	# have to set HOME because rply wants to write into ~/.cache/rply
 	make -C docs \
 		SPHINXOPTS='-D today="$(BUILD_DATE)"' \
-		HOME='$(CURDIR)/docs/fake-home' \
+		HOME='$(CURDIR)/docs/_build/fake-home' \
 		man
 	# TODO html docs (and install them in hy-doc or something)
 
