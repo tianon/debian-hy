@@ -9,7 +9,11 @@ BUILD_DATE=$(shell dpkg-parsechangelog -S Date | LC_ALL=C date -u '+%B %d, %Y' -
 
 override_dh_auto_build:
 	dh_auto_build
-	make -C docs man SPHINXOPTS='-D today="$(BUILD_DATE)"'
+	# have to set HOME because rply wants to write into ~/.cache/rply
+	make -C docs \
+		SPHINXOPTS='-D today="$(BUILD_DATE)"' \
+		HOME='$(CURDIR)/docs/fake-home' \
+		man
 	# TODO html docs (and install them in hy-doc or something)
 
 override_dh_auto_install:

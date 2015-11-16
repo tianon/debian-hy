@@ -1,3 +1,9 @@
+hy (0.11.0-4) UNRELEASED; urgency=medium
+
+  * Fix FTBFS due to rply trying to write to HOME during sphinx-build.
+
+ -- Tianon Gravi <tianon@debian.org>  Mon, 16 Nov 2015 09:30:10 -0800
+
 hy (0.11.0-3) unstable; urgency=medium
 
   * Fix FTBFS by adding python-clint to Build-Depends (Closes: #796434).
