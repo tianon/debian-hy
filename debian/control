@@ -4,6 +4,7 @@ Priority: optional
 Maintainer: Tianon Gravi <tianon@debian.org>
 Uploaders: Paul Tagliamonte <paultag@debian.org>
 Build-Depends: debhelper (>= 9),
+               dh-python,
                python-all (>= 2.6~),
                python-astor,
                python-clint,
