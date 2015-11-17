@@ -3,7 +3,7 @@ import hy  # noqa
 from hy._compat import PY3
 from .native_tests.cons import *  # noqa
 from .native_tests.defclass import *  # noqa
-from .native_tests.math import *  # noqa
+from .native_tests.mathematics import *  # noqa
 from .native_tests.native_macros import *  # noqa
 from .native_tests.quote import *  # noqa
 from .native_tests.language import *  # noqa

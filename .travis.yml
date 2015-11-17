@@ -1,22 +1,15 @@
+sudo: false
 language: python
 python:
   - "pypy"
   - "2.6"
   - "2.7"
-  - "3.2"
   - "3.3"
   - "3.4"
-cache:
-  - $HOME/.pip-cache
-# command to install dependencies
-install:
-  - pip install -r requirements-travis.txt --download-cache $HOME/.pip-cache
-  - pip install coveralls --download-cache $HOME/.pip-cache
-  - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install unittest2; fi  # needs for running tests
-  - pip install --allow-all-external -e .
+cache: pip
 # command to run tests
 script: make travis
-after_success: coveralls
+after_success: make coveralls
 notifications:
   email:
     - paultag@gmail.com
@@ -27,7 +20,3 @@ notifications:
     on_success: change
     on_failure: change
     use_notice: false
-# blacklist
-branches:
-    except:
-      - debian

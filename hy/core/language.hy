@@ -29,6 +29,7 @@
 (import sys)
 (import [hy._compat [long-type]]) ; long for python2, int for python3
 (import [hy.models.cons [HyCons]]
+        [hy.models.symbol [HySymbol]]
         [hy.models.keyword [HyKeyword *keyword-prefix*]])
 (import [hy.lex [LexException PrematureEndOfInput tokenize]])
 
@@ -38,7 +39,7 @@
 
 (defn butlast [coll]
   "Returns coll except of last element."
-  (itertools.islice coll 0 (dec (len coll))))
+  (drop-last 1 coll))
 
 (defn coll? [coll]
   "Checks whether item is a collection"
@@ -56,7 +57,6 @@
   "Check whether k is a keyword"
   (and (instance? (type :foo) k)
        (.startswith k (get :foo 0))))
-
 
 (defn dec [n]
   "Decrement n by 1"
@@ -119,6 +119,12 @@
   "Drop `count` elements from `coll` and yield back the rest"
   (itertools.islice coll count nil))
 
+(defn drop-last [n coll]
+  "Return a sequence of all but the last n elements in coll."
+  (let [[iters (itertools.tee coll)]]
+    (map first (apply zip [(get iters 0)
+                           (drop n (get iters 1))]))))
+
 (defn empty? [coll]
   "Return True if `coll` is empty"
   (= 0 (len coll)))
@@ -157,6 +163,10 @@
 (defn float? [x]
   "Return True if x is float"
   (isinstance x float))
+
+(defn symbol? [s]
+  "Check whether s is a symbol"
+  (instance? HySymbol s))
 
 (import [threading [Lock]])
 (setv _gensym_counter 1234)
@@ -232,6 +242,10 @@
 (defn iterator? [x]
   "Return true if x is an iterator"
   (isinstance x collections.Iterator))
+
+(defn last [coll]
+  "Return last item from `coll`"
+  (get (list coll) -1))
 
 (defn list* [hd &rest tl]
   "Return a dotted list construed from the elements of the argument"
@@ -367,7 +381,6 @@
       (else (if parsed (break)))))
     parsed)
 
-
 (defun Botsbuildbots () (Botsbuildbots))
 
 (defn zipwith [func &rest lists]
@@ -404,11 +417,11 @@
 
 (def *exports* '[Botsbuildbots
                  butlast calling-module-name coll? cons cons? cycle
-                 dec distinct disassemble drop drop-while empty? even?
+                 dec distinct disassemble drop drop-last drop-while empty? even?
                  every? first filter filterfalse flatten float? gensym identity
                  inc input instance? integer integer? integer-char? interleave
-                 interpose iterable? iterate iterator? keyword keyword? list*
+                 interpose iterable? iterate iterator? keyword keyword? last list*
                  macroexpand macroexpand-1 map merge-with name neg? nil? none?
                  nth numeric? odd? pos? range read remove repeat repeatedly
-                 rest reduce second some string string? take take-nth
+                 rest reduce second some string string? symbol? take take-nth
                  take-while zero? zip zip_longest zipwith])

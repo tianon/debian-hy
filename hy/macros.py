@@ -117,6 +117,7 @@ _wrappers = {
     list: lambda l: HyList(_wrap_value(x) for x in l),
     tuple: lambda t: HyList(_wrap_value(x) for x in t),
     type(None): lambda foo: HySymbol("None"),
+    HyExpression: lambda e: HyExpression(_wrap_value(x) for x in e),
 }
 
 if sys.version_info[0] < 3:  # do not add long on python3
@@ -199,8 +200,7 @@ def macroexpand_1(tree, module_name):
                         e.expression = tree
                     raise
                 except Exception as e:
-                    msg = "`" + str(tree[0]) + "' " + \
-                          " ".join(str(e).split()[1:])
+                    msg = "expanding `" + str(tree[0]) + "': " + repr(e)
                     raise HyMacroExpansionError(tree, msg)
                 obj.replace(tree)
                 return obj

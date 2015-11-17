@@ -31,6 +31,7 @@ import argparse
 import code
 import ast
 import sys
+import os
 
 import astor.codegen
 
@@ -41,6 +42,9 @@ from hy.compiler import hy_compile, HyTypeError
 from hy.importer import (ast_compile, import_buffer_to_module,
                          import_file_to_ast, import_file_to_hst)
 from hy.completer import completion
+from hy.completer import Completer
+
+from hy.errors import HyIOError
 
 from hy.macros import macro, require
 from hy.models.expression import HyExpression
@@ -127,9 +131,9 @@ def koan_macro():
   "The Nirvana Sutra has the Four Virtues, hasn't it?"
   "It has."
   Ummon asked, picking up a cup, "How many virtues has this?"
-  "None at all, " said the monk.
+  "None at all," said the monk.
   "But ancient people said it had, didn't they?" said Ummon.
-  "Whatdo you think of what they said?"
+  "What do you think of what they said?"
   Ummon struck the cup and asked, "You understand?"
   "No," said the monk.
   "Then," said Ummon, "You'd better go on with your lectures on the sutra."
@@ -188,6 +192,18 @@ def run_command(source):
     return 0
 
 
+def run_module(mod_name):
+    from hy.importer import MetaImporter
+    pth = MetaImporter().find_on_path(mod_name)
+    if pth is not None:
+        sys.argv = [pth] + sys.argv
+        return run_file(pth)
+
+    sys.stderr.write("{0}: module '{1}' not found.\n".format(hy.__appname__,
+                                                             mod_name))
+    return 1
+
+
 def run_file(filename):
     from hy.importer import import_file_to_module
     try:
@@ -207,9 +223,12 @@ def run_repl(hr=None, spy=False):
     sys.ps1 = "=> "
     sys.ps2 = "... "
 
-    with completion():
+    namespace = {'__name__': '__console__', '__doc__': ''}
+
+    with completion(Completer(namespace)):
+
         if not hr:
-            hr = HyREPL(spy)
+            hr = HyREPL(spy, namespace)
 
         hr.interact("{appname} {version} using "
                     "{py}({build}) {pyversion} on {os}".format(
@@ -226,13 +245,20 @@ def run_repl(hr=None, spy=False):
 
 def run_icommand(source, spy=False):
     hr = HyREPL(spy)
-    hr.runsource(source, filename='<input>', symbol='single')
+    if os.path.exists(source):
+        with open(source, "r") as f:
+            source = f.read()
+        filename = source
+    else:
+        filename = '<input>'
+    hr.runsource(source, filename=filename, symbol='single')
     return run_repl(hr)
 
 
-USAGE = "%(prog)s [-h | -i cmd | -c cmd | file | -] [arg] ..."
+USAGE = "%(prog)s [-h | -i cmd | -c cmd | -m module | file | -] [arg] ..."
 VERSION = "%(prog)s " + hy.__version__
 EPILOG = """  file         program read from script
+  module       module to execute as main
   -            program read from stdin
   [arg] ...    arguments passed to program in sys.argv[1:]
 """
@@ -246,6 +272,8 @@ def cmdline_handler(scriptname, argv):
         epilog=EPILOG)
     parser.add_argument("-c", dest="command",
                         help="program passed in as a string")
+    parser.add_argument("-m", dest="mod",
+                        help="module to run, passed in as a string")
     parser.add_argument(
         "-i", dest="icommand",
         help="program passed in as a string, then stay in REPL")
@@ -265,6 +293,16 @@ def cmdline_handler(scriptname, argv):
     # mimics Python sys.executable
     hy.executable = argv[0]
 
+    # need to split the args if using "-m"
+    # all args after the MOD are sent to the module
+    # in sys.argv
+    module_args = []
+    if "-m" in argv:
+        mloc = argv.index("-m")
+        if len(argv) > mloc+2:
+            module_args = argv[mloc+2:]
+            argv = argv[:mloc+2]
+
     options = parser.parse_args(argv[1:])
 
     if options.show_tracebacks:
@@ -272,11 +310,15 @@ def cmdline_handler(scriptname, argv):
         SIMPLE_TRACEBACKS = False
 
     # reset sys.argv like Python
-    sys.argv = options.args or [""]
+    sys.argv = options.args + module_args or [""]
 
     if options.command:
         # User did "hy -c ..."
         return run_command(options.command)
+
+    if options.mod:
+        # User did "hy -m ..."
+        return run_module(options.mod)
 
     if options.icommand:
         # User did "hy -i ..."
@@ -291,10 +333,10 @@ def cmdline_handler(scriptname, argv):
             # User did "hy <filename>"
             try:
                 return run_file(options.args[0])
-            except IOError as x:
+            except HyIOError as e:
                 sys.stderr.write("hy: Can't open file '%s': [Errno %d] %s\n" %
-                                 (x.filename, x.errno, x.strerror))
-                sys.exit(x.errno)
+                                 (e.filename, e.errno, e.strerror))
+                sys.exit(e.errno)
 
     # User did NOTHING!
     return run_repl(spy=options.spy)

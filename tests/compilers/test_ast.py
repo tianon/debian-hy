@@ -198,14 +198,21 @@ def test_ast_bad_except():
 
 
 def test_ast_good_assert():
-    "Make sure AST can compile valid assert"
+    """Make sure AST can compile valid asserts. Asserts may or may not
+    include a label."""
     can_compile("(assert 1)")
+    can_compile("(assert 1 \"Assert label\")")
+    can_compile("(assert 1 (+ \"spam \" \"eggs\"))")
+    can_compile("(assert 1 12345)")
+    can_compile("(assert 1 nil)")
+    can_compile("(assert 1 (+ 2 \"incoming eggsception\"))")
 
 
 def test_ast_bad_assert():
     "Make sure AST can't compile invalid assert"
     cant_compile("(assert)")
-    cant_compile("(assert 1 2)")
+    cant_compile("(assert 1 2 3)")
+    cant_compile("(assert 1 [1 2] 3)")
 
 
 def test_ast_good_global():
@@ -328,6 +335,24 @@ def test_ast_invalid_for():
     cant_compile("(for* [a 1] (else 1 2))")
 
 
+def test_ast_valid_let():
+    "Make sure AST can compile valid let"
+    can_compile("(let [])")
+    can_compile("(let [a b])")
+    can_compile("(let [[a 1]])")
+    can_compile("(let [[a 1] b])")
+
+
+def test_ast_invalid_let():
+    "Make sure AST can't compile invalid let"
+    cant_compile("(let 1)")
+    cant_compile("(let [1])")
+    cant_compile("(let [[a 1 2]])")
+    cant_compile("(let [[]])")
+    cant_compile("(let [[a]])")
+    cant_compile("(let [[1]])")
+
+
 def test_ast_expression_basics():
     """ Ensure basic AST expression conversion works. """
     code = can_compile("(foo bar)").body[0]
@@ -377,6 +402,12 @@ def test_ast_tuple():
     """ Ensure tuples work. """
     code = can_compile("(, 1 2 3)").body[0].value
     assert type(code) == ast.Tuple
+
+
+def test_argument_destructuring():
+    """ Ensure argument destructuring compilers. """
+    can_compile("(fn [[a b]] (print a b))")
+    cant_compile("(fn [[]] 0)")
 
 
 def test_lambda_list_keywords_rest():

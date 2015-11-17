@@ -1,5 +1,5 @@
 # Copyright (c) 2013 Paul Tagliamonte <paultag@debian.org>
-# Copyright (c) 2013 Bob Tolbert <bob@tolbert.org>
+# Copyright (c) 2013, 2014 Bob Tolbert <bob@tolbert.org>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -22,6 +22,7 @@
 from hy.compiler import hy_compile, HyTypeError
 from hy.models import HyObject
 from hy.lex import tokenize, LexException
+from hy.errors import HyIOError
 
 from io import open
 import marshal
@@ -49,8 +50,11 @@ def import_buffer_to_hst(buf):
 
 def import_file_to_hst(fpath):
     """Import content from fpath and return an Hy AST."""
-    with open(fpath, 'r', encoding='utf-8') as f:
-        return import_buffer_to_hst(f.read())
+    try:
+        with open(fpath, 'r', encoding='utf-8') as f:
+            return import_buffer_to_hst(f.read())
+    except IOError as e:
+        raise HyIOError(e.errno, e.strerror, e.filename)
 
 
 def import_buffer_to_ast(buf, module_name):
@@ -209,5 +213,5 @@ class MetaImporter(object):
             return MetaLoader(path)
 
 
-sys.meta_path.append(MetaImporter())
+sys.meta_path.insert(0, MetaImporter())
 sys.path.insert(0, "")

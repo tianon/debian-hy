@@ -153,6 +153,10 @@
   "Like `if`, but anything that is not None/nil is considered true."
   `(if (is-not ~test nil) ~@branches))
 
+(defmacro-alias [lisp-if-not lif-not] [test &rest branches]
+  "Like `if-not`, but anything that is not None/nil is considered true."
+  `(if (is ~test nil) ~@branches))
+
 
 (defmacro when [test &rest body]
   "Execute `body` when `test` is true"
@@ -173,6 +177,25 @@
     `(defmacro ~name [~@args]
        (let ~(HyList (map (fn [x] `[~x (gensym (slice '~x 2))]) syms))
             ~@body))))
+
+
+(if-python2
+  (defmacro/g! yield-from [expr]
+    `(do (import types)
+         (setv ~g!iter (iter ~expr))
+         (setv ~g!return nil)
+         (setv ~g!message nil)
+         (while true
+           (try (if (isinstance ~g!iter types.GeneratorType)
+                  (setv ~g!message (yield (.send ~g!iter ~g!message)))
+                  (setv ~g!message (yield (next ~g!iter))))
+           (catch [~g!e StopIteration]
+             (do (setv ~g!return (if (hasattr ~g!e "value")
+                                     (. ~g!e value)
+                                     nil))
+               (break)))))
+           ~g!return))
+  nil)
 
 
 (defmacro defmain [args &rest body]

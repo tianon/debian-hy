@@ -44,6 +44,8 @@
   "define a function `name` with signature `lambda-list` and body `body`"
   (if (not (= (type name) HySymbol))
     (macro-error name "defn/defun takes a name as first argument"))
+  (if (not (isinstance lambda-list HyList))
+    (macro-error name "defn/defun takes a parameter list as second argument"))
   `(setv ~name (fn ~lambda-list ~@body)))
 
 
@@ -58,7 +60,9 @@
        (if (!= (len variable) 2)
          (macro-error variable "let variable assignments must contain two items"))
        (.append macroed-variables `(setv ~(get variable 0) ~(get variable 1))))
-      (.append macroed-variables `(setv ~variable None))))
+      (if (isinstance variable HySymbol)
+        (.append macroed-variables `(setv ~variable None))
+        (macro-error variable "let lexical context element must be a list or symbol"))))
   `((fn []
      ~@macroed-variables
      ~@body)))

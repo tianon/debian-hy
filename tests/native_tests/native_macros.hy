@@ -206,6 +206,24 @@
   (assert (= (lif nil "true" "false") "false"))
   (assert (= (lif 0 "true" "false") "true")))
 
+(defn test-lisp-if-not []
+  "test that lisp-if-not works as expected"
+  ; nil is false
+  (assert (= (lisp-if-not None "false" "true") "false"))
+  (assert (= (lisp-if-not nil "false" "true") "false"))
+
+  ; But everything else is True!  Even falsey things.
+  (assert (= (lisp-if-not True "false" "true") "true"))
+  (assert (= (lisp-if-not False "false" "true") "true"))
+  (assert (= (lisp-if-not 0 "false" "true") "true"))
+  (assert (= (lisp-if-not "some-string" "false" "true") "true"))
+  (assert (= (lisp-if-not "" "false" "true") "true"))
+  (assert (= (lisp-if-not (+ 1 2 3) "false" "true") "true"))
+
+  ; Just to be sure, test the alias lif-not
+  (assert (= (lif-not nil "false" "true") "false"))
+  (assert (= (lif-not 0 "false" "true") "true")))
+
 
 (defn test-defn-alias []
   (defn-alias [tda-main tda-a1 tda-a2] [] :bazinga)
@@ -214,6 +232,30 @@
   (assert (= (tda-a1) :bazinga))
   (assert (= (tda-a2) :bazinga))
   (assert (= tda-main tda-a1 tda-a2)))
+
+(defn test-yield-from []
+  "NATIVE: testing yield from"
+  (defn yield-from-test []
+    (for* [i (range 3)]
+      (yield i))
+    (yield-from [1 2 3]))
+  (assert (= (list (yield-from-test)) [0 1 2 1 2 3])))
+
+(defn test-yield-from-exception-handling []
+  "NATIVE: Ensure exception handling in yield from works right"
+  (defn yield-from-subgenerator-test []
+    (yield 1)
+    (yield 2)
+    (yield 3)
+    (assert 0))
+  (defn yield-from-test []
+    (for* [i (range 3)]
+       (yield i))
+    (try
+     (yield-from (yield-from-subgenerator-test))
+     (catch [e AssertionError]
+       (yield 4))))
+  (assert (= (list (yield-from-test)) [0 1 2 1 2 3 4])))
 
 (defn test-botsbuildbots []
   (assert (> (len (first (Botsbuildbots))) 50)))

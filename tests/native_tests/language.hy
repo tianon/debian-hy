@@ -52,6 +52,15 @@
   (try (eval '(defn lambda [] (print "hello")))
        (catch [e [TypeError]] (assert (in "Can't assign to a builtin" (str e))))))
 
+(defn test-fn-corner-cases []
+  "NATIVE: tests that fn/defn handles corner cases gracefully"
+  (try (eval '(fn "foo"))
+       (catch [e [Exception]] (assert (in "to (fn) must be a list"
+                                          (str e)))))
+  (try (eval '(defn foo "foo"))
+       (catch [e [Exception]]
+         (assert (in "takes a parameter list as second" (str e))))))
+
 (defn test-for-loop []
   "NATIVE: test for loops"
   (setv count 0)
@@ -673,8 +682,33 @@
 
 (defn test-let []
   "NATIVE: test let works rightish"
+  ;; TODO: test sad paths for let
   (assert (= (let [[x 1] [y 2] [z 3]] (+ x y z)) 6))
-  (assert (= (let [[x 1] a [y 2] b] (if a 1 2)) 2)))
+  (assert (= (let [[x 1] a [y 2] b] (if a 1 2)) 2))
+  (assert (= (let [x] x) nil))
+  (assert (= (let [[x "x not bound"]] (setv x "x bound by setv") x)
+             "x bound by setv"))
+  (assert (= (let [[x "let nests scope correctly"]]
+               (let [y] x))
+             "let nests scope correctly"))
+  (assert (= (let [[x 999999]]
+               (let [[x "x being rebound"]] x))
+             "x being rebound"))
+  (assert (= (let [[x "x not being rebound"]]
+               (let [[x 2]] nil)
+               x)
+             "x not being rebound"))
+  (assert (= (let [[x (set [3 2 1 3 2])] [y x] [z y]] z) (set [1 2 3])))
+  (import math)
+  (let [[cos math.cos]
+        [foo-cos (fn [x] (cos x))]]
+    (assert (= (cos math.pi) -1.0))
+    (assert (= (foo-cos (- math.pi)) -1.0))
+    (let [[cos (fn [_] "cos has been locally rebound")]]
+      (assert (= (cos cos) "cos has been locally rebound"))
+      (assert (= (-> math.pi (/ 3) foo-cos (round 2)) 0.5)))
+    (setv cos (fn [_] "cos has been rebound by setv"))
+    (assert (= (foo-cos foo-cos) "cos has been rebound by setv"))))
 
 
 (defn test-if-mangler []
@@ -1099,3 +1133,29 @@
   (assert (= (name :foo) "foo"))
   (assert (= (name :foo_bar) "foo-bar"))
   (assert (= (name test-name-conversion) "test-name-conversion")))
+
+(defn test-keywords []
+  "Check keyword use in function calls"
+  (assert (= (kwtest) {}))
+  (assert (= (kwtest :key "value") {"key" "value"}))
+  (assert (= (kwtest :key-with-dashes "value") {"key_with_dashes" "value"}))
+  (assert (= (kwtest :result (+ 1 1)) {"result" 2}))
+  (assert (= (kwtest :key (kwtest :key2 "value")) {"key" {"key2" "value"}}))
+  (assert (= ((get (kwtest :key (fn [x] (* x 2))) "key") 3) 6)))
+
+(defmacro identify-keywords [&rest elts]
+  `(list
+    (map
+     (lambda (x) (if (is-keyword x) "keyword" "other"))
+     ~elts)))
+
+(defn test-keywords-and-macros []
+  "Macros should still be able to handle keywords as they best see fit."
+  (assert
+   (= (identify-keywords 1 "bloo" :foo)
+      ["other" "other" "keyword"])))
+
+(defn test-argument-destr []
+  "Make sure argument destructuring works"
+  (defn f [[a b] [c]] (, a b c))
+  (assert (= (f [1 2] [3]) (, 1 2 3))))

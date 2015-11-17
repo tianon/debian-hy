@@ -1,5 +1,5 @@
 ;; Copyright (c) 2013 Paul Tagliamonte <paultag@debian.org>
-;; Copyright (c) 2013 Bob Tolbert <bob@tolbert.org>
+;; Copyright (c) 2013, 2014 Bob Tolbert <bob@tolbert.org>
 
 ;; Permission is hereby granted, free of charge, to any person obtaining a
 ;; copy of this software and associated documentation files (the "Software"),
@@ -40,6 +40,19 @@
   (assert-true (coll? (range 10)))
   (assert-false (coll? "abc"))
   (assert-false (coll? 1)))
+
+(defn test-butlast []
+  "NATIVE: testing butlast function"
+  (assert-equal (list (butlast (range 10)))
+                [0 1 2 3 4 5 6 7 8])
+  (assert-equal (list (butlast [1]))
+                [])
+  (assert-equal (list (butlast []))
+                [])
+  ; with an infinite sequence
+  (import itertools)
+  (assert-equal (list (take 5 (butlast (itertools.count 10))))
+                [10 11 12 13 14]))
 
 (defn test-cycle []
   "NATIVE: testing cycle"
@@ -119,6 +132,19 @@
   (assert-equal res [])
   (setv res (list (take 5 (drop 2 (iterate inc 0)))))
   (assert-equal res [2 3 4 5 6]))
+
+(defn test-drop-last []
+  "NATIVE: testing drop-last function"
+  (assert-equal (list (drop-last 5 (range 10 20)))
+                [10 11 12 13 14])
+  (assert-equal (list (drop-last 0 (range 5)))
+                [0 1 2 3 4])
+  (assert-equal (list (drop-last 100 (range 100)))
+                [])
+  ; with an infinite sequence
+  (import itertools)
+  (assert-equal (list (take 5 (drop-last 100 (itertools.count 10))))
+                [10 11 12 13 14]))
 
 (defn test-drop-while []
   "NATIVE: testing drop-while function"
@@ -206,6 +232,14 @@
   (assert-false (float? -3))
   (assert-true (float? -3.2))
   (assert-false (float? "foo")))
+
+(defn test-symbol? []
+  "NATIVE: testing the symbol? function"
+  (assert-false (symbol? "hello"))
+  (assert-false (symbol? [1 2 3]))
+  (assert-false (symbol? '[a b c]))
+  (assert-true (symbol? 'im-symbol))
+  (assert-false (symbol? (name 'im-symbol))))
 
 (defn test-gensym []
   "NATIVE: testing the gensym function"
@@ -347,6 +381,13 @@
   (assert-true (iterator? (repeat 3)))
   ;; should not work for an int
   (assert-false (iterator? 5)))
+
+(defn test-last []
+  "NATIVE: testing the last function"
+  (assert-equal (last [1 2 3 4]) 4)
+  (assert-equal (last [5]) 5))
+  (import itertools)
+  (assert-equal (last (take 5 (itertools.count 10))) 14)
 
 (defn test-neg []
   "NATIVE: testing the neg? function"
@@ -571,3 +612,8 @@
   (assert (not (keyword? ":foo")))
   (assert (not (keyword? 1)))
   (assert (not (keyword? nil))))
+
+(defn test-import-init-hy []
+  "NATIVE: testing import of __init__.hy"
+  (import tests.resources.bin)
+  (assert (in "_null_fn_for_import_test" (dir tests.resources.bin))))
