@@ -1,4 +1,6 @@
 #!/bin/bash
 set -e
 
+export HOME="$ADTTMP/fake-home"
+
 python2 -m nose tests --exclude test_botsbuildbots

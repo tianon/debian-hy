@@ -1,7 +1,7 @@
 Tests: nose2
-Depends: python-hy
+Depends: python-hy, python-nose
 Restrictions: allow-stderr
 
 Tests: nose3
-Depends: python3-hy
+Depends: python3-hy, python3-nose
 Restrictions: allow-stderr
