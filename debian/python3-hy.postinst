@@ -3,7 +3,10 @@ set -e
 
 case "$1" in
 	configure)
-		update-alternatives --install /usr/bin/hy hy /usr/bin/hy3 50
+		update-alternatives \
+			--install /usr/bin/hy hy /usr/bin/hy3 50 \
+			--slave /usr/bin/hyc hyc /usr/bin/hyc3 \
+			--slave /usr/bin/hy2py hy2py /usr/bin/hy2py3
 		;;
 esac
 
