@@ -1,4 +1,4 @@
-hy (0.11.0-4) UNRELEASED; urgency=medium
+hy (0.11.0-4) unstable; urgency=medium
 
   * Fix FTBFS due to rply trying to write to HOME during sphinx-build.
   * Fix build repeatability with proper override_dh_auto_clean.
@@ -6,7 +6,7 @@ hy (0.11.0-4) UNRELEASED; urgency=medium
   * Add "hyc" and "hy2py" as slaves to the "hy" alternative.
   * Add alternatives to python-hy package also (to make testing easier).
 
- -- Tianon Gravi <tianon@debian.org>  Mon, 16 Nov 2015 09:30:10 -0800
+ -- Tianon Gravi <tianon@debian.org>  Mon, 16 Nov 2015 21:15:55 -0800
 
 hy (0.11.0-3) unstable; urgency=medium
 
