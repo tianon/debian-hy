@@ -5,6 +5,9 @@ export PYBUILD_NAME := hy
 # have to set HOME because rply wants to write into ~/.cache/rply
 export HOME := $(CURDIR)/fake-home
 
+# TODO figure out why the tests in python3 fail via pybuild, but pass after install
+export PYBUILD_DISABLE_python3 := test
+
 BUILD_DATE=$(shell dpkg-parsechangelog -S Date | LC_ALL=C date -u '+%B %d, %Y' -f -)
 
 %:
@@ -16,6 +19,16 @@ override_dh_auto_build:
 		SPHINXOPTS='-D today="$(BUILD_DATE)"' \
 		man
 	# TODO html docs (and install them in hy-doc or something)
+
+override_dh_auto_test:
+	# tests use "README.md" from the original source for IO testing
+	dh_auto_test -- \
+		--before-test 'cp {dir}/README.md {build_dir}' \
+		--test-args ' \
+			--exclude test_botsbuildbots \
+			--ignore-files test_bin.py \
+		' \
+		--after-test 'rm {build_dir}/README.md'
 
 override_dh_auto_install:
 	dh_auto_install

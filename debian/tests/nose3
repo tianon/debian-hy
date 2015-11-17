@@ -1,0 +1,4 @@
+#!/bin/bash
+set -e
+
+python2 -m nose tests --exclude test_botsbuildbots
